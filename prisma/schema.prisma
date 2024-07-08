@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+        
+
+model User {
+  userId      String      @id @default(uuid())
+  firstName   String      
+  lastName    String
+  email       String      @unique
+  password    String
+  phoneNumber String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  Organization   Organizations[]
+}
+
+model Organizations {
+  orgId        String      @id @default(uuid())
+  name String 
+  description String
+  owner     User     @relation(fields: [ownerId], references: [userId], onDelete: Cascade)
+  ownerId   String // relation scalar field  (used in the `@relation` attribute above)
+}
+
+// model AirDrops {
+//   id          Int         @id @default(autoincrement())
+//   name        String
+//   network     String
+//   description String
+//   category    Category
+//   steps       String
+//   cost        String
+//   imageUrl    String      @default("https://i.ibb.co/19DC34s/SCAN-Recovered-01.jpg")
+//   Wishlist    Wishlists[]
+// }
+
+// enum Category {
+//   LATEST
+//   HOTTEST
+//   POTENTIAL
+// }
