@@ -10,6 +10,7 @@ import UserRouter from "./route/user.route";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,3 +42,5 @@ app.use("/", Authrouter);
     console.log(error.message);
   }
 })();
+
+export default app;
