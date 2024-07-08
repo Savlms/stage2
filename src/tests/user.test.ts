@@ -1,8 +1,8 @@
 import request from "supertest";
-import app from "../src/app";
+import app from "../app";
 
-describe("Organisation API", () => {
-  it("should create a new organisation", async () => {
+describe("User API", () => {
+  it("should get a user by id", async () => {
     const loginRes = await request(app)
       .post("/login")
       .send({
@@ -13,51 +13,53 @@ describe("Organisation API", () => {
     const token = loginRes.body.data.accessToken;
 
     const res = await request(app)
-      .post("/api/organisations")
+      .get("/api/users/1")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("data");
+  });
+
+  it("should get all users", async () => {
+    const loginRes = await request(app)
+      .post("/login")
+      .send({
+        email: "john.doe@example.com",
+        password: "password",
+      });
+
+    const token = loginRes.body.data.accessToken;
+
+    const res = await request(app)
+      .get("/api/users")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("users");
+  });
+
+  it("should update a user", async () => {
+    const loginRes = await request(app)
+      .post("/login")
+      .send({
+        email: "john.doe@example.com",
+        password: "password",
+      });
+
+    const token = loginRes.body.data.accessToken;
+
+    const res = await request(app)
+      .put("/api/users")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        name: "New Organisation",
-        description: "This is a new organisation",
+        firstName: "John",
+        lastName: "Doe Updated",
+        phoneNumber: "0987654321",
       });
-
-    expect(res.status).toBe(201);
-    expect(res.body).toHaveProperty("data");
-    expect(res.body.data).toHaveProperty("orgId");
-  });
-
-  it("should get an organisation by id", async () => {
-    const loginRes = await request(app)
-      .post("/login")
-      .send({
-        email: "john.doe@example.com",
-        password: "password",
-      });
-
-    const token = loginRes.body.data.accessToken;
-
-    const res = await request(app)
-      .get("/api/organisations/1")
-      .set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("data");
-  });
-
-  it("should get all organisations", async () => {
-    const loginRes = await request(app)
-      .post("/login")
-      .send({
-        email: "john.doe@example.com",
-        password: "password",
-      });
-
-    const token = loginRes.body.data.accessToken;
-
-    const res = await request(app)
-      .get("/api/organisations")
-      .set("Authorization", `Bearer ${token}`);
-
-    expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty("organisations");
+    expect(res.body.data).toHaveProperty("firstName", "John");
+    expect(res.body.data).toHaveProperty("lastName", "Doe Updated");
   });
 });
