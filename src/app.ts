@@ -26,7 +26,7 @@ app.use("/api/organisations", Orgrouter);
 app.use("/api/users", UserRouter);
 // app.use("/api/v1", Authrouter);
 app.use("/", (req, res) => {
-  res.send("Hello, Welcome to SkillHub");
+  res.send("Hello, Welcome to HNG Stage 2");
 });
 
 app.use("/", Authrouter);
